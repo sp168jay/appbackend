@@ -75,7 +75,7 @@ public class MyActivity extends AppCompatActivity {
         protected String doInBackground(String... str){//一定要實現的函式 execute 會呼叫這個函式
             try{
 //                String get_url = "http://tw.yahoo.com/";//如果是用這個會得到 yahoo 網頁的內容
-                String get_url = "http://192.168.43.90:8000/" + str[0];//str是放我們要傳的資料
+                String get_url = "http://192.168.32.136:8000/" + str[0];//str是放我們要傳的資料
 
                 HttpClient Client = new DefaultHttpClient();//可以用來做類似瀏覽器的事情
                 HttpGet httpget;//會拿來放網址。
