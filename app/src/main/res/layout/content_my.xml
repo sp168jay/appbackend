@@ -1,20 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_my"
-    tools:context="com.example.abair.apptestbackend.MyActivity">
+    tools:context="com.example.abair.apptestbackend.MyActivity"
+    tools:showIn="@layout/activity_my">
+    <!--改成使用 LinearLayout，記得要加方向性-->
+    <!--其他使用預設，版面才不會跑掉-->
 
+    <!--輸入要傳送出去的資料-->
+    <EditText
+        android:id="@+id/senddata_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" />
+    <!--請查一下，id，ems 分別是做麼的-->
+
+    <!--傳送資料用的按鈕-->
+    <Button
+        android:id="@+id/send_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Data"
+        android:onClick="on_send_click"/>
+    <!--android:text 可以用多國語言用的方式處理。-->
+    <!--onClick 需要在java程式中有對應的函式 on_send_click-->
+
+    <!--修改成要顯示收到的資料-->
     <TextView
-        android:text="Hello World!"
-        android:layout_width="wrap_content"
+        android:id="@+id/show_text"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-</RelativeLayout>
+</LinearLayout>
