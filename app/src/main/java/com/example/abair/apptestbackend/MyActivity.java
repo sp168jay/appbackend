@@ -1,6 +1,5 @@
 package com.example.abair.apptestbackend;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,19 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 
 public class MyActivity extends AppCompatActivity {
@@ -79,8 +66,6 @@ public class MyActivity extends AppCompatActivity {
     {
 //        System.out.println("你按了");//請查一下這個會印在哪裹
         EditText send_txt = (EditText) findViewById(R.id.senddata_txt);//findViewById 回傳的是 view，要告訴程式把回傳的看做 EditText。
-//        HttpSend httas = new HttpSend();//產生一個 AsyncTask 的物件實體
-//        httas.execute(send_txt.getText().toString());//執行這個非同步的任務。參數是我們要傳的文字。
 
         final TextView tv = (TextView) findViewById(R.id.show_text);//找到我們要拿來顯示資料的 UI 元件
 
@@ -120,75 +105,5 @@ public class MyActivity extends AppCompatActivity {
 
         //3) 把要執行的 StringRequest 加到隊列中執行
         queue.add(stringRequest);
-    }
-
-//    這個 activity 用到的類別，所以在類別中宣告即可
-//    處理網路事件，會強制使用其他執行緒來處理，要不程式會當。這裹使用 AsyncTask
-    private class HttpSend extends AsyncTask<String, Void, String>//這種 < > 寫法是 java template 的寫法，很進階的用法。請查一下～
-    {
-        @Override
-        protected String doInBackground(String... str){//一定要實現的函式 execute 會呼叫這個函式
-            //宣告幾個在整個函式中會用到的變數
-            InputStream inputStream = null;
-            HttpURLConnection urlConnection = null;
-
-            try{
-//                String get_url = "http://tw.yahoo.com/";//如果是用這個會得到 yahoo 網頁的內容
-
-                str[0] = URLEncoder.encode(str[0], "utf-8");//傳給 HttpURLConnection 的網址內容，如果有中文，需要先編碼
-                String get_url = "http://192.168.43.90:8000/" + str[0];//str是放我們要傳的資料
-//
-//                HttpClient Client = new DefaultHttpClient();//可以用來做類似瀏覽器的事情
-//                HttpGet httpget;//會拿來放網址。
-//                ResponseHandler<String> responseHandler = new BasicResponseHandler();//用來處理回傳的內容
-//                httpget = new HttpGet(get_url);//放 http get 的指令
-//                String content = Client.execute(httpget, responseHandler);//執行類似輸入網址然後按 enter 的動作，之後會得到 content
-//
-//                return content;
-
-//                使用 HttpURLConnection 取代 HttpClient
-//                URL url = new URL("http://www.google.com/");
-                URL url = new URL(get_url);//連到之前我們的網址
-                urlConnection = (HttpURLConnection) url.openConnection();//建立物件實體
-                urlConnection.setRequestMethod("GET");//設定連線方式
-                int statusCode = urlConnection.getResponseCode();//實際連線，並回傳狀態
-
-                if( statusCode == 200 )
-                {
-                    //將資料流轉成字串
-                    inputStream = new BufferedInputStream(urlConnection.getInputStream());//處理回傳的資料流
-                    BufferedReader bufferedReader = new BufferedReader( new InputStreamReader( inputStream ) );//封裝成 reader
-                    String line = "";
-                    String result = "";
-
-                    while((line = bufferedReader.readLine()) != null)//從 reader 中，一行一行讀取出資料，放到字串中
-                    {
-                        result += line;
-                    }
-
-                    if(inputStream != null)
-                    {
-                        inputStream.close();//釋放資料流的資源
-                    }
-                    return result;
-                }
-                else if(statusCode == 404)//處理找不到網頁的情況
-                {
-                    return "Page Not Found...";
-                }
-            }
-            catch(Exception e)
-            {
-                System.out.println(e);
-            }
-            return "Cannot Connect";
-        }
-
-        protected  void onPostExecute(String result)//這個會處理 response 回來的資料
-        {
-            TextView tv = (TextView) findViewById(R.id.show_text);//找到我們要拿來顯示資料的 UI 元件
-            tv.setText(result);//設定這個元件的內容
-        }
-
     }
 }
