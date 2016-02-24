@@ -12,6 +12,13 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -22,6 +29,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -71,8 +79,47 @@ public class MyActivity extends AppCompatActivity {
     {
 //        System.out.println("你按了");//請查一下這個會印在哪裹
         EditText send_txt = (EditText) findViewById(R.id.senddata_txt);//findViewById 回傳的是 view，要告訴程式把回傳的看做 EditText。
-        HttpSend httas = new HttpSend();//產生一個 AsyncTask 的物件實體
-        httas.execute(send_txt.getText().toString());//執行這個非同步的任務。參數是我們要傳的文字。
+//        HttpSend httas = new HttpSend();//產生一個 AsyncTask 的物件實體
+//        httas.execute(send_txt.getText().toString());//執行這個非同步的任務。參數是我們要傳的文字。
+
+        final TextView tv = (TextView) findViewById(R.id.show_text);//找到我們要拿來顯示資料的 UI 元件
+
+        //使用 volley 來做網路資料的傳輸
+        // 1) 先宣告一個隊列，用來放置要執行的請求
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String dataInput = send_txt.getText().toString();//取得我們要額外加到網址的資料，即後端API
+        try{
+            dataInput = URLEncoder.encode(dataInput, "utf-8");//Volley 也需要將中文的網址做編碼，這個動作需要 try catch
+        }
+        catch(UnsupportedEncodingException e)
+        {
+            e.printStackTrace();//編碼若有錯誤，在這裹印出 exception
+        }
+
+//        String url = "http://www.google.com";
+        String url = "http://192.168.43.90:8000/" + dataInput;//把編碼過的加到網路主機的網址後面
+
+        //2) 定義要放到隊列中執行用的 StringRequest
+        StringRequest stringRequest = new StringRequest(//需要 4 個參數
+                Request.Method.GET,//定義請求的方式
+                url,//執行請求用的網址
+                new Response.Listener<String>(){//處理回應的字串用的匿名函式
+                    @Override
+                    public void onResponse(String response){//改寫處理的函式
+                        tv.setText(response);//因為會用到外部的參數 tv，所以外部的參數 tv 要宣告成 final
+                    }
+                },
+                new Response.ErrorListener(){//處理錯誤回應用的匿名函式
+                    @Override
+                    public void onErrorResponse(VolleyError error){//改寫處理的函式
+                        tv.setText("回傳錯誤");
+                    }
+                }
+        );
+
+        //3) 把要執行的 StringRequest 加到隊列中執行
+        queue.add(stringRequest);
     }
 
 //    這個 activity 用到的類別，所以在類別中宣告即可
