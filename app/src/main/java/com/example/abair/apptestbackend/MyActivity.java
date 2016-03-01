@@ -82,8 +82,11 @@ public class MyActivity extends AppCompatActivity {
             e.printStackTrace();//編碼若有錯誤，在這裹印出 exception
         }
 
+        String API_TOKEN = "test";//根據主機上 user 的 token 來測試是否可以正常運作
+
 //        String url = "http://www.google.com";
-        String url = "http://192.168.43.90:8000/" + dataInput;//把編碼過的加到網路主機的網址後面
+        //丟給 laravel 的 token 的使用方式：網址的最後加上 ?api_token=[使用者的 token 內容]
+        String url = "http://192.168.43.90:8000/" + dataInput + "?api_token=" + API_TOKEN;//把編碼過的 dataInput 加到網路主機的網址後面
 
         //2) 定義要放到隊列中執行用的 StringRequest
         StringRequest stringRequest = new StringRequest(//需要 4 個參數
